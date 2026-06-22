@@ -1,0 +1,1045 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="41" skipped="0" tests="80" time="143.850" timestamp="2026-06-19T10:40:02.687803+05:30" hostname="LTCH-5CD120NGRK"><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_crescendo_attack" time="40.694" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_indirect_injection" time="3.435" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_rag_injection" time="3.247" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_tool_injection" time="3.284" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_encoding_obfuscation" time="3.226" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_context_saturation" time="3.612" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_delayed_triggering" time="3.128" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_agent_to_agent_injection" time="3.328" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_multi_turn_judge_decisions_are_recorded" time="35.527" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_multi_turn_respects_max_turns" time="20.811" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm01_single_turn_executes_multiple_payloads" time="4.301" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm02_single_turn_execution" time="0.008"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='b9410f43-e6d0-47f1-9a0e-cfa5299eca75', scan_name='LLM02 single-turn test', target_name='Test Chatb...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 7, 755282, tzinfo=datetime.timezone.utc), error=None).scenario_results">@pytest.mark.asyncio
+    async def test_llm02_single_turn_execution():
+        """Test LLM02 Sensitive Information Disclosure scenario."""
+        request = ScanRequest(
+            scan_name="LLM02 single-turn test",
+            target=TargetConfig(
+                name="Test Chatbot",
+                url="mock://test-chatbot",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=["llm02.sensitive_info"],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='b9410f43-e6d0-47f1-9a0e-cfa5299eca75', scan_name='LLM02 single-turn test', target_name='Test Chatb...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 7, 755282, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_single_turn_scenarios.py:60: AssertionError</failure></testcase><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm03_single_turn_execution" time="0.008"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='6f5bb983-7c2b-462a-9b2a-fb54490848d0', scan_name='LLM03 single-turn test', target_name='Test API',...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 262429, tzinfo=datetime.timezone.utc), error=None).scenario_results">@pytest.mark.asyncio
+    async def test_llm03_single_turn_execution():
+        """Test LLM03 Supply Chain scenario."""
+        request = ScanRequest(
+            scan_name="LLM03 single-turn test",
+            target=TargetConfig(
+                name="Test API",
+                url="mock://test-api",
+                method="POST",
+                request_template={"input": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=["llm03.supply_chain"],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='6f5bb983-7c2b-462a-9b2a-fb54490848d0', scan_name='LLM03 single-turn test', target_name='Test API',...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 262429, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_single_turn_scenarios.py:83: AssertionError</failure></testcase><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm04_single_turn_execution" time="0.009"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='ecfed0a6-c991-48f9-bd47-c78f6484b6aa', scan_name='LLM04 single-turn test', target_name='Test Model...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 285492, tzinfo=datetime.timezone.utc), error=None).scenario_results">@pytest.mark.asyncio
+    async def test_llm04_single_turn_execution():
+        """Test LLM04 Data/Model Poisoning scenario."""
+        request = ScanRequest(
+            scan_name="LLM04 single-turn test",
+            target=TargetConfig(
+                name="Test Model",
+                url="mock://test-model",
+                method="POST",
+                request_template={"data": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=["llm04.data_poisoning"],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='ecfed0a6-c991-48f9-bd47-c78f6484b6aa', scan_name='LLM04 single-turn test', target_name='Test Model...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 285492, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_single_turn_scenarios.py:106: AssertionError</failure></testcase><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm05_single_turn_execution" time="0.009"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='df0ffb86-e47d-40d4-9b4d-cdeeac87c100', scan_name='LLM05 single-turn test', target_name='Test Handl...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 300194, tzinfo=datetime.timezone.utc), error=None).scenario_results">@pytest.mark.asyncio
+    async def test_llm05_single_turn_execution():
+        """Test LLM05 Improper Output Handling scenario."""
+        request = ScanRequest(
+            scan_name="LLM05 single-turn test",
+            target=TargetConfig(
+                name="Test Handler",
+                url="mock://test-handler",
+                method="POST",
+                request_template={"output": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=["llm05.improper_output"],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='df0ffb86-e47d-40d4-9b4d-cdeeac87c100', scan_name='LLM05 single-turn test', target_name='Test Handl...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 300194, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_single_turn_scenarios.py:127: AssertionError</failure></testcase><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm06_single_turn_execution" time="0.010"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='e4daeccc-2d86-4467-a1a9-bf3f3f217588', scan_name='LLM06 single-turn test', target_name='Test Agent...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 315371, tzinfo=datetime.timezone.utc), error=None).scenario_results">@pytest.mark.asyncio
+    async def test_llm06_single_turn_execution():
+        """Test LLM06 Excessive Agency scenario."""
+        request = ScanRequest(
+            scan_name="LLM06 single-turn test",
+            target=TargetConfig(
+                name="Test Agent",
+                url="mock://test-agent",
+                method="POST",
+                request_template={"action": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=["llm06.excessive_agency"],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='e4daeccc-2d86-4467-a1a9-bf3f3f217588', scan_name='LLM06 single-turn test', target_name='Test Agent...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 315371, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_single_turn_scenarios.py:148: AssertionError</failure></testcase><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm07_single_turn_execution" time="0.050"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='d7866cb6-47e4-4248-bc9a-836d6aca8066', scan_name='LLM07 single-turn test', target_name='Test Plugi...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 371751, tzinfo=datetime.timezone.utc), error=None).scenario_results">@pytest.mark.asyncio
+    async def test_llm07_single_turn_execution():
+        """Test LLM07 Insecure Plugin Design scenario."""
+        request = ScanRequest(
+            scan_name="LLM07 single-turn test",
+            target=TargetConfig(
+                name="Test Plugin",
+                url="mock://test-plugin",
+                method="POST",
+                request_template={"plugin": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=["llm07.insecure_plugin"],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='d7866cb6-47e4-4248-bc9a-836d6aca8066', scan_name='LLM07 single-turn test', target_name='Test Plugi...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 371751, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_single_turn_scenarios.py:169: AssertionError</failure></testcase><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm08_single_turn_execution" time="0.008"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='40633356-bdbe-44c5-8fa4-d298fe9e2d3b', scan_name='LLM08 single-turn test', target_name='Test Embed...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 386549, tzinfo=datetime.timezone.utc), error=None).scenario_results">@pytest.mark.asyncio
+    async def test_llm08_single_turn_execution():
+        """Test LLM08 Vector Embedding Weaknesses scenario."""
+        request = ScanRequest(
+            scan_name="LLM08 single-turn test",
+            target=TargetConfig(
+                name="Test Embedding",
+                url="mock://test-embedding",
+                method="POST",
+                request_template={"embedding": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=["llm08.vector_embedding"],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='40633356-bdbe-44c5-8fa4-d298fe9e2d3b', scan_name='LLM08 single-turn test', target_name='Test Embed...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 386549, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_single_turn_scenarios.py:190: AssertionError</failure></testcase><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm09_single_turn_execution" time="0.012"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='dd08303a-4759-4a66-b1b3-a60b472b566a', scan_name='LLM09 single-turn test', target_name='Test Misin...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 413625, tzinfo=datetime.timezone.utc), error=None).scenario_results">@pytest.mark.asyncio
+    async def test_llm09_single_turn_execution():
+        """Test LLM09 Misinformation scenario."""
+        request = ScanRequest(
+            scan_name="LLM09 single-turn test",
+            target=TargetConfig(
+                name="Test Misinformation",
+                url="mock://test-misinformation",
+                method="POST",
+                request_template={"info": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=["llm09.misinformation"],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='dd08303a-4759-4a66-b1b3-a60b472b566a', scan_name='LLM09 single-turn test', target_name='Test Misin...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 413625, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_single_turn_scenarios.py:211: AssertionError</failure></testcase><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm10_single_turn_execution" time="0.009"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='e1c483e1-313b-4388-9fb6-7d670fe0e7ca', scan_name='LLM10 single-turn test', target_name='Test Unbou...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 423154, tzinfo=datetime.timezone.utc), error=None).scenario_results">@pytest.mark.asyncio
+    async def test_llm10_single_turn_execution():
+        """Test LLM10 Unbounded Consumption scenario."""
+        request = ScanRequest(
+            scan_name="LLM10 single-turn test",
+            target=TargetConfig(
+                name="Test Unbounded",
+                url="mock://test-unbounded",
+                method="POST",
+                request_template={"resource": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=["llm10.unbounded_consumption"],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='e1c483e1-313b-4388-9fb6-7d670fe0e7ca', scan_name='LLM10 single-turn test', target_name='Test Unbou...timezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 8, 423154, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_single_turn_scenarios.py:232: AssertionError</failure></testcase><testcase classname="tests.test_all_single_turn_scenarios" name="test_all_scenarios_with_max_turns_limit" time="2.820" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_detector_results_for_single_turn_attacks" time="2.830" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM01-Prompt Injection-llm01.prompt_injection]" time="2.723" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM02-Sensitive Information Disclosure-llm02.sensitive_info]" time="0.007"><failure message="AssertionError: No scenario results for LLM02-Sensitive Information Disclosure&#10;assert []&#10; +  where [] = ScanResult(scan_id='3f88b7fe-b784-405d-84bd-d317abd263bf', scan_name='LLM02-Sensitive Information Disclosure execution...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 815404, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2E600&gt;
+vuln_name = 'LLM02-Sensitive Information Disclosure'
+scenario_id = 'llm02.sensitive_info'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_scenario_execution(self, vuln_name, scenario_id):
+        """Test that each vulnerability type scenario can be executed."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} execution test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED", f"Scan failed for {vuln_name}"
+&gt;       assert result.scenario_results, f"No scenario results for {vuln_name}"
+E       AssertionError: No scenario results for LLM02-Sensitive Information Disclosure
+E       assert []
+E        +  where [] = ScanResult(scan_id='3f88b7fe-b784-405d-84bd-d317abd263bf', scan_name='LLM02-Sensitive Information Disclosure execution...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 815404, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:44: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM03-Supply Chain-llm03.supply_chain]" time="0.008"><failure message="AssertionError: No scenario results for LLM03-Supply Chain&#10;assert []&#10; +  where [] = ScanResult(scan_id='c9efb260-196f-4cb6-8797-0cd6883515a0', scan_name='LLM03-Supply Chain execution test', target_name=...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 835869, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2E5A0&gt;
+vuln_name = 'LLM03-Supply Chain', scenario_id = 'llm03.supply_chain'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_scenario_execution(self, vuln_name, scenario_id):
+        """Test that each vulnerability type scenario can be executed."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} execution test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED", f"Scan failed for {vuln_name}"
+&gt;       assert result.scenario_results, f"No scenario results for {vuln_name}"
+E       AssertionError: No scenario results for LLM03-Supply Chain
+E       assert []
+E        +  where [] = ScanResult(scan_id='c9efb260-196f-4cb6-8797-0cd6883515a0', scan_name='LLM03-Supply Chain execution test', target_name=...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 835869, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:44: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM04-Data_model_poisoning-llm04.data_poisoning]" time="0.010"><failure message="AssertionError: No scenario results for LLM04-Data_model_poisoning&#10;assert []&#10; +  where [] = ScanResult(scan_id='ffce836b-0700-4d15-b4ec-2eb3029f0d1b', scan_name='LLM04-Data_model_poisoning execution test', targ...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 852791, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2E390&gt;
+vuln_name = 'LLM04-Data_model_poisoning', scenario_id = 'llm04.data_poisoning'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_scenario_execution(self, vuln_name, scenario_id):
+        """Test that each vulnerability type scenario can be executed."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} execution test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED", f"Scan failed for {vuln_name}"
+&gt;       assert result.scenario_results, f"No scenario results for {vuln_name}"
+E       AssertionError: No scenario results for LLM04-Data_model_poisoning
+E       assert []
+E        +  where [] = ScanResult(scan_id='ffce836b-0700-4d15-b4ec-2eb3029f0d1b', scan_name='LLM04-Data_model_poisoning execution test', targ...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 852791, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:44: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM05-Improper_output_handling-llm05.improper_output]" time="0.008"><failure message="AssertionError: No scenario results for LLM05-Improper_output_handling&#10;assert []&#10; +  where [] = ScanResult(scan_id='fefe024d-5b6f-4ab2-b364-2f2af588efb8', scan_name='LLM05-Improper_output_handling execution test', ...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 869148, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2E2A0&gt;
+vuln_name = 'LLM05-Improper_output_handling'
+scenario_id = 'llm05.improper_output'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_scenario_execution(self, vuln_name, scenario_id):
+        """Test that each vulnerability type scenario can be executed."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} execution test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED", f"Scan failed for {vuln_name}"
+&gt;       assert result.scenario_results, f"No scenario results for {vuln_name}"
+E       AssertionError: No scenario results for LLM05-Improper_output_handling
+E       assert []
+E        +  where [] = ScanResult(scan_id='fefe024d-5b6f-4ab2-b364-2f2af588efb8', scan_name='LLM05-Improper_output_handling execution test', ...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 869148, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:44: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM06-Excessive_agency-llm06.excessive_agency]" time="0.008"><failure message="AssertionError: No scenario results for LLM06-Excessive_agency&#10;assert []&#10; +  where [] = ScanResult(scan_id='cf8d8dca-a4e6-4481-9f42-d635418e1702', scan_name='LLM06-Excessive_agency execution test', target_n...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 884735, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2E420&gt;
+vuln_name = 'LLM06-Excessive_agency', scenario_id = 'llm06.excessive_agency'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_scenario_execution(self, vuln_name, scenario_id):
+        """Test that each vulnerability type scenario can be executed."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} execution test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED", f"Scan failed for {vuln_name}"
+&gt;       assert result.scenario_results, f"No scenario results for {vuln_name}"
+E       AssertionError: No scenario results for LLM06-Excessive_agency
+E       assert []
+E        +  where [] = ScanResult(scan_id='cf8d8dca-a4e6-4481-9f42-d635418e1702', scan_name='LLM06-Excessive_agency execution test', target_n...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 884735, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:44: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM07-Insecure Plugin Design-llm07.insecure_plugin]" time="0.009"><failure message="AssertionError: No scenario results for LLM07-Insecure Plugin Design&#10;assert []&#10; +  where [] = ScanResult(scan_id='ac4c7608-ccc1-48b3-b43c-93435a482f7f', scan_name='LLM07-Insecure Plugin Design execution test', ta...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 899072, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2E180&gt;
+vuln_name = 'LLM07-Insecure Plugin Design'
+scenario_id = 'llm07.insecure_plugin'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_scenario_execution(self, vuln_name, scenario_id):
+        """Test that each vulnerability type scenario can be executed."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} execution test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED", f"Scan failed for {vuln_name}"
+&gt;       assert result.scenario_results, f"No scenario results for {vuln_name}"
+E       AssertionError: No scenario results for LLM07-Insecure Plugin Design
+E       assert []
+E        +  where [] = ScanResult(scan_id='ac4c7608-ccc1-48b3-b43c-93435a482f7f', scan_name='LLM07-Insecure Plugin Design execution test', ta...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 899072, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:44: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM08-Vector_Embedding_Weaknesses-llm08.vector_embedding]" time="0.010"><failure message="AssertionError: No scenario results for LLM08-Vector_Embedding_Weaknesses&#10;assert []&#10; +  where [] = ScanResult(scan_id='31a71cce-ce13-4aeb-bf78-44724c9629b3', scan_name='LLM08-Vector_Embedding_Weaknesses execution test...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 915391, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2DFD0&gt;
+vuln_name = 'LLM08-Vector_Embedding_Weaknesses'
+scenario_id = 'llm08.vector_embedding'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_scenario_execution(self, vuln_name, scenario_id):
+        """Test that each vulnerability type scenario can be executed."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} execution test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED", f"Scan failed for {vuln_name}"
+&gt;       assert result.scenario_results, f"No scenario results for {vuln_name}"
+E       AssertionError: No scenario results for LLM08-Vector_Embedding_Weaknesses
+E       assert []
+E        +  where [] = ScanResult(scan_id='31a71cce-ce13-4aeb-bf78-44724c9629b3', scan_name='LLM08-Vector_Embedding_Weaknesses execution test...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 915391, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:44: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM09-Misinformation-llm09.misinformation]" time="0.009"><failure message="AssertionError: No scenario results for LLM09-Misinformation&#10;assert []&#10; +  where [] = ScanResult(scan_id='92b2c01c-48d7-437c-8a89-730cc93fa8f1', scan_name='LLM09-Misinformation execution test', target_nam...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 928584, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2E090&gt;
+vuln_name = 'LLM09-Misinformation', scenario_id = 'llm09.misinformation'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_scenario_execution(self, vuln_name, scenario_id):
+        """Test that each vulnerability type scenario can be executed."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} execution test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED", f"Scan failed for {vuln_name}"
+&gt;       assert result.scenario_results, f"No scenario results for {vuln_name}"
+E       AssertionError: No scenario results for LLM09-Misinformation
+E       assert []
+E        +  where [] = ScanResult(scan_id='92b2c01c-48d7-437c-8a89-730cc93fa8f1', scan_name='LLM09-Misinformation execution test', target_nam...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 928584, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:44: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM10-Unbounded_Consumption-llm10.unbounded_consumption]" time="0.009"><failure message="AssertionError: No scenario results for LLM10-Unbounded_Consumption&#10;assert []&#10; +  where [] = ScanResult(scan_id='16e92d8b-e37f-4f62-a84b-5ded101f04fb', scan_name='LLM10-Unbounded_Consumption execution test', tar...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 943452, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2DE80&gt;
+vuln_name = 'LLM10-Unbounded_Consumption'
+scenario_id = 'llm10.unbounded_consumption'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_scenario_execution(self, vuln_name, scenario_id):
+        """Test that each vulnerability type scenario can be executed."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} execution test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED", f"Scan failed for {vuln_name}"
+&gt;       assert result.scenario_results, f"No scenario results for {vuln_name}"
+E       AssertionError: No scenario results for LLM10-Unbounded_Consumption
+E       assert []
+E        +  where [] = ScanResult(scan_id='16e92d8b-e37f-4f62-a84b-5ded101f04fb', scan_name='LLM10-Unbounded_Consumption execution test', tar...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 16, 943452, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:44: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM01-Prompt Injection-llm01.prompt_injection]" time="2.817" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM02-Sensitive Information Disclosure-llm02.sensitive_info]" time="0.010"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='cfb5e3e9-b40a-41ba-a394-886e5466cfdb', scan_name='LLM02-Sensitive Information Disclosure detector ...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 777965, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2DFA0&gt;
+vuln_name = 'LLM02-Sensitive Information Disclosure'
+scenario_id = 'llm02.sensitive_info'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_has_detector_results(self, vuln_name, scenario_id):
+        """Test that detector results are generated for each vulnerability type."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='cfb5e3e9-b40a-41ba-a394-886e5466cfdb', scan_name='LLM02-Sensitive Information Disclosure detector ...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 777965, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:68: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM03-Supply Chain-llm03.supply_chain]" time="0.007"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='ecc21b29-f08b-49e5-8691-9164dbec015b', scan_name='LLM03-Supply Chain detector test', target_name='...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 792509, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2E000&gt;
+vuln_name = 'LLM03-Supply Chain', scenario_id = 'llm03.supply_chain'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_has_detector_results(self, vuln_name, scenario_id):
+        """Test that detector results are generated for each vulnerability type."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='ecc21b29-f08b-49e5-8691-9164dbec015b', scan_name='LLM03-Supply Chain detector test', target_name='...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 792509, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:68: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM04-Data_model_poisoning-llm04.data_poisoning]" time="0.007"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='2f83d19c-27d8-480d-8eed-970dee704516', scan_name='LLM04-Data_model_poisoning detector test', targe...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 802068, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2E270&gt;
+vuln_name = 'LLM04-Data_model_poisoning', scenario_id = 'llm04.data_poisoning'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_has_detector_results(self, vuln_name, scenario_id):
+        """Test that detector results are generated for each vulnerability type."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='2f83d19c-27d8-480d-8eed-970dee704516', scan_name='LLM04-Data_model_poisoning detector test', targe...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 802068, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:68: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM05-Improper_output_handling-llm05.improper_output]" time="0.008"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='200b0571-3c64-45ea-a1c9-44f842bcd260', scan_name='LLM05-Improper_output_handling detector test', t...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 819455, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2E330&gt;
+vuln_name = 'LLM05-Improper_output_handling'
+scenario_id = 'llm05.improper_output'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_has_detector_results(self, vuln_name, scenario_id):
+        """Test that detector results are generated for each vulnerability type."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='200b0571-3c64-45ea-a1c9-44f842bcd260', scan_name='LLM05-Improper_output_handling detector test', t...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 819455, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:68: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM06-Excessive_agency-llm06.excessive_agency]" time="0.008"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='b2e5b5bc-4589-4ac9-acc7-fc6f0a2e5161', scan_name='LLM06-Excessive_agency detector test', target_na...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 834507, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2E4B0&gt;
+vuln_name = 'LLM06-Excessive_agency', scenario_id = 'llm06.excessive_agency'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_has_detector_results(self, vuln_name, scenario_id):
+        """Test that detector results are generated for each vulnerability type."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='b2e5b5bc-4589-4ac9-acc7-fc6f0a2e5161', scan_name='LLM06-Excessive_agency detector test', target_na...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 834507, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:68: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM07-Insecure Plugin Design-llm07.insecure_plugin]" time="0.009"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='e13207ec-93fe-43ca-b244-70ff4669de2e', scan_name='LLM07-Insecure Plugin Design detector test', tar...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 847935, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2E570&gt;
+vuln_name = 'LLM07-Insecure Plugin Design'
+scenario_id = 'llm07.insecure_plugin'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_has_detector_results(self, vuln_name, scenario_id):
+        """Test that detector results are generated for each vulnerability type."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='e13207ec-93fe-43ca-b244-70ff4669de2e', scan_name='LLM07-Insecure Plugin Design detector test', tar...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 847935, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:68: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM08-Vector_Embedding_Weaknesses-llm08.vector_embedding]" time="0.008"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='61d30ae5-45d9-4b0d-b2b2-c98ec6f33f5b', scan_name='LLM08-Vector_Embedding_Weaknesses detector test'...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 861822, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2E9F0&gt;
+vuln_name = 'LLM08-Vector_Embedding_Weaknesses'
+scenario_id = 'llm08.vector_embedding'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_has_detector_results(self, vuln_name, scenario_id):
+        """Test that detector results are generated for each vulnerability type."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='61d30ae5-45d9-4b0d-b2b2-c98ec6f33f5b', scan_name='LLM08-Vector_Embedding_Weaknesses detector test'...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 861822, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:68: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM09-Misinformation-llm09.misinformation]" time="0.009"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='423439f3-9a03-4c16-b4d3-9dd2c0c0af09', scan_name='LLM09-Misinformation detector test', target_name...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 877659, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2EC30&gt;
+vuln_name = 'LLM09-Misinformation', scenario_id = 'llm09.misinformation'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_has_detector_results(self, vuln_name, scenario_id):
+        """Test that detector results are generated for each vulnerability type."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='423439f3-9a03-4c16-b4d3-9dd2c0c0af09', scan_name='LLM09-Misinformation detector test', target_name...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 877659, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:68: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM10-Unbounded_Consumption-llm10.unbounded_consumption]" time="0.008"><failure message="AssertionError: assert []&#10; +  where [] = ScanResult(scan_id='ee2ae99c-117c-456f-bee3-275cc5f79a4a', scan_name='LLM10-Unbounded_Consumption detector test', targ...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 878229, tzinfo=datetime.timezone.utc), error=None).scenario_results">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE2ECF0&gt;
+vuln_name = 'LLM10-Unbounded_Consumption'
+scenario_id = 'llm10.unbounded_consumption'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_has_detector_results(self, vuln_name, scenario_id):
+        """Test that detector results are generated for each vulnerability type."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       assert result.scenario_results
+E       AssertionError: assert []
+E        +  where [] = ScanResult(scan_id='ee2ae99c-117c-456f-bee3-275cc5f79a4a', scan_name='LLM10-Unbounded_Consumption detector test', targ...imezone.utc), completed_at=datetime.datetime(2026, 6, 19, 5, 12, 19, 878229, tzinfo=datetime.timezone.utc), error=None).scenario_results
+
+tests\test_all_vulnerability_types.py:68: AssertionError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM01-Prompt Injection-llm01.prompt_injection]" time="3.674" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM02-Sensitive Information Disclosure-llm02.sensitive_info]" time="0.009"><failure message="IndexError: list index out of range">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE60890&gt;
+vuln_name = 'LLM02-Sensitive Information Disclosure'
+scenario_id = 'llm02.sensitive_info'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_detector_has_required_fields(self, vuln_name, scenario_id):
+        """Test that detector results have all required fields."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector fields test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       scenario = result.scenario_results[0]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+tests\test_all_vulnerability_types.py:96: IndexError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM03-Supply Chain-llm03.supply_chain]" time="0.010"><failure message="IndexError: list index out of range">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE60950&gt;
+vuln_name = 'LLM03-Supply Chain', scenario_id = 'llm03.supply_chain'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_detector_has_required_fields(self, vuln_name, scenario_id):
+        """Test that detector results have all required fields."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector fields test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       scenario = result.scenario_results[0]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+tests\test_all_vulnerability_types.py:96: IndexError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM04-Data_model_poisoning-llm04.data_poisoning]" time="0.009"><failure message="IndexError: list index out of range">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE60A10&gt;
+vuln_name = 'LLM04-Data_model_poisoning', scenario_id = 'llm04.data_poisoning'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_detector_has_required_fields(self, vuln_name, scenario_id):
+        """Test that detector results have all required fields."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector fields test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       scenario = result.scenario_results[0]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+tests\test_all_vulnerability_types.py:96: IndexError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM05-Improper_output_handling-llm05.improper_output]" time="0.008"><failure message="IndexError: list index out of range">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE60B00&gt;
+vuln_name = 'LLM05-Improper_output_handling'
+scenario_id = 'llm05.improper_output'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_detector_has_required_fields(self, vuln_name, scenario_id):
+        """Test that detector results have all required fields."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector fields test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       scenario = result.scenario_results[0]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+tests\test_all_vulnerability_types.py:96: IndexError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM06-Excessive_agency-llm06.excessive_agency]" time="0.007"><failure message="IndexError: list index out of range">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE60BF0&gt;
+vuln_name = 'LLM06-Excessive_agency', scenario_id = 'llm06.excessive_agency'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_detector_has_required_fields(self, vuln_name, scenario_id):
+        """Test that detector results have all required fields."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector fields test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       scenario = result.scenario_results[0]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+tests\test_all_vulnerability_types.py:96: IndexError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM07-Insecure Plugin Design-llm07.insecure_plugin]" time="0.009"><failure message="IndexError: list index out of range">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE60CB0&gt;
+vuln_name = 'LLM07-Insecure Plugin Design'
+scenario_id = 'llm07.insecure_plugin'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_detector_has_required_fields(self, vuln_name, scenario_id):
+        """Test that detector results have all required fields."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector fields test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       scenario = result.scenario_results[0]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+tests\test_all_vulnerability_types.py:96: IndexError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM08-Vector_Embedding_Weaknesses-llm08.vector_embedding]" time="0.007"><failure message="IndexError: list index out of range">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE60D70&gt;
+vuln_name = 'LLM08-Vector_Embedding_Weaknesses'
+scenario_id = 'llm08.vector_embedding'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_detector_has_required_fields(self, vuln_name, scenario_id):
+        """Test that detector results have all required fields."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector fields test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       scenario = result.scenario_results[0]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+tests\test_all_vulnerability_types.py:96: IndexError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM09-Misinformation-llm09.misinformation]" time="0.007"><failure message="IndexError: list index out of range">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE60E30&gt;
+vuln_name = 'LLM09-Misinformation', scenario_id = 'llm09.misinformation'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_detector_has_required_fields(self, vuln_name, scenario_id):
+        """Test that detector results have all required fields."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector fields test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       scenario = result.scenario_results[0]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+tests\test_all_vulnerability_types.py:96: IndexError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM10-Unbounded_Consumption-llm10.unbounded_consumption]" time="0.008"><failure message="IndexError: list index out of range">self = &lt;test_all_vulnerability_types.TestAllVulnerabilityTypes object at 0x000001F91BE60EF0&gt;
+vuln_name = 'LLM10-Unbounded_Consumption'
+scenario_id = 'llm10.unbounded_consumption'
+
+    @pytest.mark.parametrize("vuln_name,scenario_id", VULNERABILITY_TYPES)
+    @pytest.mark.asyncio
+    async def test_vulnerability_detector_has_required_fields(self, vuln_name, scenario_id):
+        """Test that detector results have all required fields."""
+        request = ScanRequest(
+            scan_name=f"{vuln_name} detector fields test",
+            target=TargetConfig(
+                name="Test Target",
+                url="mock://test-target",
+                method="POST",
+                request_template={"message": "{{prompt}}", "conversation_id": "{{conversation_id}}"},
+            ),
+            scenario_ids=[scenario_id],
+            settings=ScanSettings(max_turns=5, retry_count=0),
+        )
+    
+        result = await ScanOrchestrator().run_scan(request)
+    
+        assert result.status.value == "COMPLETED"
+&gt;       scenario = result.scenario_results[0]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+tests\test_all_vulnerability_types.py:96: IndexError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_all_vulnerabilities_in_single_scan" time="0.002"><failure message="TypeError: TestAllVulnerabilityTypes.test_all_vulnerabilities_in_single_scan() takes 0 positional arguments but 1 was given">self = &lt;Coroutine test_all_vulnerabilities_in_single_scan&gt;
+
+    def runtest(self) -&gt; None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+&gt;           super().runtest()
+
+.venv-1\Lib\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+&gt;       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_all_vulnerabilities_in_single_scan() takes 0 positional arguments but 1 was given
+
+.venv-1\Lib\site-packages\pytest_asyncio\plugin.py:904: TypeError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_with_different_max_turns" time="0.002"><failure message="TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_different_max_turns() takes 0 positional arguments but 1 was given">self = &lt;Coroutine test_vulnerability_with_different_max_turns&gt;
+
+    def runtest(self) -&gt; None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+&gt;           super().runtest()
+
+.venv-1\Lib\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+&gt;       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_different_max_turns() takes 0 positional arguments but 1 was given
+
+.venv-1\Lib\site-packages\pytest_asyncio\plugin.py:904: TypeError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_with_different_timeout" time="0.002"><failure message="TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_different_timeout() takes 0 positional arguments but 1 was given">self = &lt;Coroutine test_vulnerability_with_different_timeout&gt;
+
+    def runtest(self) -&gt; None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+&gt;           super().runtest()
+
+.venv-1\Lib\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+&gt;       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_different_timeout() takes 0 positional arguments but 1 was given
+
+.venv-1\Lib\site-packages\pytest_asyncio\plugin.py:904: TypeError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_with_temperature_variation" time="0.002"><failure message="TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_temperature_variation() takes 0 positional arguments but 1 was given">self = &lt;Coroutine test_vulnerability_with_temperature_variation&gt;
+
+    def runtest(self) -&gt; None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+&gt;           super().runtest()
+
+.venv-1\Lib\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+&gt;       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_temperature_variation() takes 0 positional arguments but 1 was given
+
+.venv-1\Lib\site-packages\pytest_asyncio\plugin.py:904: TypeError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_response_structure" time="0.002"><failure message="TypeError: TestAllVulnerabilityTypes.test_vulnerability_response_structure() takes 0 positional arguments but 1 was given">self = &lt;Coroutine test_vulnerability_response_structure&gt;
+
+    def runtest(self) -&gt; None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+&gt;           super().runtest()
+
+.venv-1\Lib\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+&gt;       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_vulnerability_response_structure() takes 0 positional arguments but 1 was given
+
+.venv-1\Lib\site-packages\pytest_asyncio\plugin.py:904: TypeError</failure></testcase><testcase classname="tests.test_crescendo_profiles" name="test_crescendo_profile_runs_until_max_turns_even_if_judge_requests_terminate" time="0.005" /><testcase classname="tests.test_crescendo_profiles" name="test_crescendo_profile_uses_judge_suggested_prompt_for_next_turn" time="0.005" /><testcase classname="tests.test_crescendo_profiles" name="test_crescendo_profile_stops_early_when_attack_succeeds_before_max_turns" time="0.005" /><testcase classname="tests.test_crescendo_profiles" name="test_judge_does_not_terminate_for_benign_system_prompt_explanation" time="0.001" /><testcase classname="tests.test_llm02_detector" name="test_llm02_detector_ignores_safe_refusal_examples" time="0.007" /><testcase classname="tests.test_plugin_loading" name="test_discovers_llm01_scenarios_and_detectors" time="0.004" /><testcase classname="tests.test_plugin_loading" name="test_prompt_injection_includes_multi_turn_attack_taxonomy" time="0.003" /><testcase classname="tests.test_plugin_loading" name="test_prompt_injection_attack_taxonomy_can_be_filtered" time="0.004" /><testcase classname="tests.test_plugin_loading" name="test_prompt_injection_single_turn_payloads_can_be_disabled" time="0.003" /><testcase classname="tests.test_plugin_loading" name="test_discovers_llm02_sensitive_information_plugins" time="0.003" /><testcase classname="tests.test_plugin_loading" name="test_llm02_payloads_can_be_filtered_by_attack_type" time="0.001" /><testcase classname="tests.test_plugin_loading" name="test_llm02_attack_family_probe_counts" time="0.001" /><testcase classname="tests.test_plugin_loading" name="test_llm02_indirect_disclosure_has_full_probe_set" time="0.002" /><testcase classname="tests.test_plugin_loading" name="test_discovers_llm03_supply_chain_plugins" time="0.008" /><testcase classname="tests.test_plugin_loading" name="test_llm03_payloads_can_be_filtered_by_attack_type" time="0.002" /><testcase classname="tests.test_prompt_injection_multi_turn" name="test_prompt_injection_multi_turn_runs_until_max_turns_when_not_successful" time="0.006" /><testcase classname="tests.test_prompt_injection_multi_turn" name="test_prompt_injection_multi_turn_stops_early_on_success" time="0.007" /><testcase classname="tests.test_report_generator" name="test_generate_enterprise_report_contains_required_sections" time="0.001" /><testcase classname="tests.test_scan_orchestrator" name="test_mock_target_scan_completes_and_detects_vulnerability" time="2.590" /><testcase classname="tests.test_target_executor_auth" name="test_workflow_login_uses_form_encoding_and_cookie_session" time="0.005" /><testcase classname="tests.test_target_executor_streaming" name="test_streaming_select_stop_and_session_extraction" time="0.005" /><testcase classname="tests.test_target_executor_streaming" name="test_streaming_raw_done_sentinel_stops_before_parse" time="0.006" /><testcase classname="tests.test_target_executor_streaming" name="test_non_streaming_behavior_remains_supported" time="0.004" /></testsuite></testsuites>

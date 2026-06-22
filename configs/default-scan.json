@@ -1,0 +1,8 @@
+{
+  "max_turns": 6,
+  "timeout_seconds": 30,
+  "concurrency": 2,
+  "temperature": 0.2,
+  "retry_count": 2
+}
+

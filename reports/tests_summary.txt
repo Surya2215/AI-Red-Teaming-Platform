@@ -1,0 +1,18 @@
+collected 80 items
+================== 41 failed, 39 passed in 139.01s (0:02:19) ==================
+
+Failures:
+None
+
+Per-file progress:
+tests\test_all_multi_turn_scenarios.py ..........                        [ 12%]
+tests\test_all_single_turn_scenarios.py .FFFFFFFFF..                     [ 27%]
+tests\test_all_vulnerability_types.py .FFFFFFFFF.FFFFFFFFF.FFFFFFFFFFFFF [ 70%]
+tests\test_crescendo_profiles.py ....                                    [ 76%]
+tests\test_llm02_detector.py .                                           [ 77%]
+tests\test_plugin_loading.py ..........                                  [ 90%]
+tests\test_prompt_injection_multi_turn.py ..                             [ 92%]
+tests\test_report_generator.py .                                         [ 93%]
+tests\test_scan_orchestrator.py .                                        [ 95%]
+tests\test_target_executor_auth.py .                                     [ 96%]
+tests\test_target_executor_streaming.py ...                              [100%]

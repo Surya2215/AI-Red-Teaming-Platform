@@ -1,0 +1,26 @@
+services:
+  api:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./database:/app/database
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+    command: uvicorn core.api:app --host 0.0.0.0 --port 8000
+
+  ui:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./database:/app/database
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+      - ./targets:/app/targets
+    command: streamlit run ui/app.py --server.address 0.0.0.0 --server.port 8501
+

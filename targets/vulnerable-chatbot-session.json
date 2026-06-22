@@ -1,0 +1,42 @@
+{
+  "name": "Vulnerable Chatbot (Session Auth)",
+  "url": "http://ec2-13-233-196-8.ap-south-1.compute.amazonaws.com:8000/chat",
+  "method": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "request_template": {
+    "message": "{{prompt}}"
+  },
+  "auth": {
+    "type": "session",
+    "workflow": {
+      "credential_authentication": {
+        "enabled": true,
+        "method": "POST",
+        "url": "http://ec2-13-233-196-8.ap-south-1.compute.amazonaws.com:8000/login",
+        "body_encoding": "form",
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "body": {
+          "username": "admin",
+          "password": "Password@123"
+        }
+      },
+      "next_turn": {
+        "enabled": true,
+        "method": "POST",
+        "url": "http://ec2-13-233-196-8.ap-south-1.compute.amazonaws.com:8000/chat",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "message": "{{prompt}}"
+        },
+        "response_message_path": "response"
+      }
+    }
+  },
+  "timeout_seconds": null
+}

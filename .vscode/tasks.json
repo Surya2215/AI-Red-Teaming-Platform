@@ -1,0 +1,71 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run tests scenarios",
+			"type": "shell",
+			"command": "python -m pytest tests -q",
+			"problemMatcher": []
+		},
+		{
+			"label": "Run tests scenarios verbose",
+			"type": "shell",
+			"command": "python -m pytest tests",
+			"problemMatcher": []
+		},
+		{
+			"label": "Run tests to file",
+			"type": "shell",
+			"command": "python -m pytest tests > reports/tests_full_output.txt 2>&1",
+			"problemMatcher": []
+		},
+		{
+			"label": "Parse pytest output",
+			"type": "shell",
+			"command": "python tools/parse_pytest_output.py",
+			"problemMatcher": []
+		},
+		{
+			"label": "Capture failing scenarios",
+			"type": "shell",
+			"command": "python -m pytest tests/test_all_single_turn_scenarios.py tests/test_all_vulnerability_types.py -q 2>&1 | Out-File -FilePath reports/failed_scenarios.txt -Encoding utf8",
+			"problemMatcher": []
+		},
+		{
+			"label": "Re-run fixed scenario tests",
+			"type": "shell",
+			"command": "python -m pytest tests/test_all_single_turn_scenarios.py tests/test_all_vulnerability_types.py -q",
+			"problemMatcher": []
+		},
+		{
+			"label": "Re-run scenario suites after category fix",
+			"type": "shell",
+			"command": "python -m pytest tests/test_all_single_turn_scenarios.py tests/test_all_vulnerability_types.py -q",
+			"problemMatcher": []
+		},
+		{
+			"label": "Run full tests final",
+			"type": "shell",
+			"command": "python -m pytest tests > reports/tests_full_output_after_fix.txt 2>&1",
+			"problemMatcher": []
+		},
+		{
+			"label": "Run full tests quick final",
+			"type": "shell",
+			"command": "python -m pytest tests -q",
+			"problemMatcher": []
+		},
+		{
+			"label": "Generate junit after fix",
+			"type": "shell",
+			"command": "python -m pytest tests --junitxml=reports/unit_after_fix.xml -q",
+			"problemMatcher": []
+		},
+		{
+			"label": "Capture targeted tests after fix",
+			"type": "shell",
+			"command": "python -m pytest tests/test_all_single_turn_scenarios.py tests/test_all_vulnerability_types.py -q 2>&1 | Out-File -FilePath reports/after_fix_targeted.txt -Encoding utf8",
+			"problemMatcher": []
+		}
+	]
+}

@@ -1,0 +1,144 @@
+﻿..........................................FFFFF                          [100%]
+================================== FAILURES ===================================
+______ TestAllVulnerabilityTypes.test_all_vulnerabilities_in_single_scan ______
+
+self = <Coroutine test_all_vulnerabilities_in_single_scan>
+
+    def runtest(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+>           super().runtest()
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+>       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_all_vulnerabilities_in_single_scan() takes 0 positional arguments but 1 was given
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:904: TypeError
+____ TestAllVulnerabilityTypes.test_vulnerability_with_different_max_turns ____
+
+self = <Coroutine test_vulnerability_with_different_max_turns>
+
+    def runtest(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+>           super().runtest()
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+>       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_different_max_turns() takes 0 positional arguments but 1 was given
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:904: TypeError
+_____ TestAllVulnerabilityTypes.test_vulnerability_with_different_timeout _____
+
+self = <Coroutine test_vulnerability_with_different_timeout>
+
+    def runtest(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+>           super().runtest()
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+>       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_different_timeout() takes 0 positional arguments but 1 was given
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:904: TypeError
+___ TestAllVulnerabilityTypes.test_vulnerability_with_temperature_variation ___
+
+self = <Coroutine test_vulnerability_with_temperature_variation>
+
+    def runtest(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+>           super().runtest()
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+>       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_temperature_variation() takes 0 positional arguments but 1 was given
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:904: TypeError
+_______ TestAllVulnerabilityTypes.test_vulnerability_response_structure _______
+
+self = <Coroutine test_vulnerability_response_structure>
+
+    def runtest(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+>           super().runtest()
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+>       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_vulnerability_response_structure() takes 0 positional arguments but 1 was given
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:904: TypeError
+=========================== short test summary info ===========================
+FAILED tests/test_all_vulnerability_types.py::TestAllVulnerabilityTypes::test_all_vulnerabilities_in_single_scan
+FAILED tests/test_all_vulnerability_types.py::TestAllVulnerabilityTypes::test_vulnerability_with_different_max_turns
+FAILED tests/test_all_vulnerability_types.py::TestAllVulnerabilityTypes::test_vulnerability_with_different_timeout
+FAILED tests/test_all_vulnerability_types.py::TestAllVulnerabilityTypes::test_vulnerability_with_temperature_variation
+FAILED tests/test_all_vulnerability_types.py::TestAllVulnerabilityTypes::test_vulnerability_response_structure
+5 failed, 42 passed in 576.12s (0:09:36)

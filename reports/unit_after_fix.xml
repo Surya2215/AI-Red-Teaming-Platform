@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="80" time="697.190" timestamp="2026-06-19T11:00:19.418567+05:30" hostname="LTCH-5CD120NGRK"><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_crescendo_attack" time="40.638" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_indirect_injection" time="4.376" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_rag_injection" time="4.390" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_tool_injection" time="4.170" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_encoding_obfuscation" time="4.115" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_context_saturation" time="4.501" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_delayed_triggering" time="4.250" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_llm01_multi_turn_agent_to_agent_injection" time="4.639" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_multi_turn_judge_decisions_are_recorded" time="38.680" /><testcase classname="tests.test_all_multi_turn_scenarios" name="test_multi_turn_respects_max_turns" time="22.035" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm01_single_turn_executes_multiple_payloads" time="5.458" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm02_single_turn_execution" time="2.464" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm03_single_turn_execution" time="2.045" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm04_single_turn_execution" time="3.783" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm05_single_turn_execution" time="6.438" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm06_single_turn_execution" time="24.037" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm07_single_turn_execution" time="22.267" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm08_single_turn_execution" time="25.480" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm09_single_turn_execution" time="21.579" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_llm10_single_turn_execution" time="22.147" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_all_scenarios_with_max_turns_limit" time="3.754" /><testcase classname="tests.test_all_single_turn_scenarios" name="test_detector_results_for_single_turn_attacks" time="4.353" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM01-Prompt Injection-LLM01-Prompt Injection-llm01.prompt_injection]" time="3.873" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM02-Sensitive Information Disclosure-LLM02_Sensitive_Information_Disclosure-llm02.sensitive_information_disclosure]" time="2.482" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM03-Supply Chain-LLM03_Supply_Chain-llm03.supply_chain]" time="2.047" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM04-Data_model_poisoning-LLM04-Data_model_poisoning-llm04.data_model_poisoning]" time="3.935" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM05-Improper_output_handling-LLM05-Improper_output_handling-llm05.improper_output_handling]" time="6.289" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM06-Excessive_agency-LLM06-Excessive_agency-llm06.excessive_agency]" time="25.662" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM07-Insecure Plugin Design-LLM07-Insecure Plugin Design-llm07.system_prompt_leakage]" time="22.729" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM08-Vector_Embedding_Weaknesses-LLM08-Vector_Embedding_Weaknesses-llm08.vector_embedding_weaknesses]" time="23.837" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM09-Misinformation-LLM09-Misinformation-llm09.misinformation]" time="23.411" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_scenario_execution[LLM10-Unbounded_Consumption-LLM10-Unbounded_Consumption-llm10.unbounded_consumption]" time="21.813" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM01-Prompt Injection-LLM01-Prompt Injection-llm01.prompt_injection]" time="5.128" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM02-Sensitive Information Disclosure-LLM02_Sensitive_Information_Disclosure-llm02.sensitive_information_disclosure]" time="2.563" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM03-Supply Chain-LLM03_Supply_Chain-llm03.supply_chain]" time="2.087" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM04-Data_model_poisoning-LLM04-Data_model_poisoning-llm04.data_model_poisoning]" time="3.513" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM05-Improper_output_handling-LLM05-Improper_output_handling-llm05.improper_output_handling]" time="6.092" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM06-Excessive_agency-LLM06-Excessive_agency-llm06.excessive_agency]" time="23.287" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM07-Insecure Plugin Design-LLM07-Insecure Plugin Design-llm07.system_prompt_leakage]" time="22.204" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM08-Vector_Embedding_Weaknesses-LLM08-Vector_Embedding_Weaknesses-llm08.vector_embedding_weaknesses]" time="23.201" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM09-Misinformation-LLM09-Misinformation-llm09.misinformation]" time="22.809" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_has_detector_results[LLM10-Unbounded_Consumption-LLM10-Unbounded_Consumption-llm10.unbounded_consumption]" time="23.020" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM01-Prompt Injection-LLM01-Prompt Injection-llm01.prompt_injection]" time="4.125" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM02-Sensitive Information Disclosure-LLM02_Sensitive_Information_Disclosure-llm02.sensitive_information_disclosure]" time="2.465" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM03-Supply Chain-LLM03_Supply_Chain-llm03.supply_chain]" time="2.094" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM04-Data_model_poisoning-LLM04-Data_model_poisoning-llm04.data_model_poisoning]" time="3.771" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM05-Improper_output_handling-LLM05-Improper_output_handling-llm05.improper_output_handling]" time="6.103" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM06-Excessive_agency-LLM06-Excessive_agency-llm06.excessive_agency]" time="25.669" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM07-Insecure Plugin Design-LLM07-Insecure Plugin Design-llm07.system_prompt_leakage]" time="24.698" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM08-Vector_Embedding_Weaknesses-LLM08-Vector_Embedding_Weaknesses-llm08.vector_embedding_weaknesses]" time="24.224" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM09-Misinformation-LLM09-Misinformation-llm09.misinformation]" time="25.027" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_detector_has_required_fields[LLM10-Unbounded_Consumption-LLM10-Unbounded_Consumption-llm10.unbounded_consumption]" time="24.173" /><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_all_vulnerabilities_in_single_scan" time="0.007"><failure message="TypeError: TestAllVulnerabilityTypes.test_all_vulnerabilities_in_single_scan() takes 0 positional arguments but 1 was given">self = &lt;Coroutine test_all_vulnerabilities_in_single_scan&gt;
+
+    def runtest(self) -&gt; None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+&gt;           super().runtest()
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+&gt;       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_all_vulnerabilities_in_single_scan() takes 0 positional arguments but 1 was given
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:904: TypeError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_with_different_max_turns" time="0.006"><failure message="TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_different_max_turns() takes 0 positional arguments but 1 was given">self = &lt;Coroutine test_vulnerability_with_different_max_turns&gt;
+
+    def runtest(self) -&gt; None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+&gt;           super().runtest()
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+&gt;       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_different_max_turns() takes 0 positional arguments but 1 was given
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:904: TypeError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_with_different_timeout" time="0.007"><failure message="TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_different_timeout() takes 0 positional arguments but 1 was given">self = &lt;Coroutine test_vulnerability_with_different_timeout&gt;
+
+    def runtest(self) -&gt; None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+&gt;           super().runtest()
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+&gt;       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_different_timeout() takes 0 positional arguments but 1 was given
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:904: TypeError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_with_temperature_variation" time="0.007"><failure message="TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_temperature_variation() takes 0 positional arguments but 1 was given">self = &lt;Coroutine test_vulnerability_with_temperature_variation&gt;
+
+    def runtest(self) -&gt; None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+&gt;           super().runtest()
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+&gt;       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_vulnerability_with_temperature_variation() takes 0 positional arguments but 1 was given
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:904: TypeError</failure></testcase><testcase classname="tests.test_all_vulnerability_types.TestAllVulnerabilityTypes" name="test_vulnerability_response_structure" time="0.008"><failure message="TypeError: TestAllVulnerabilityTypes.test_vulnerability_response_structure() takes 0 positional arguments but 1 was given">self = &lt;Coroutine test_vulnerability_response_structure&gt;
+
+    def runtest(self) -&gt; None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+&gt;           super().runtest()
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = (), kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+&gt;       coro = func(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: TestAllVulnerabilityTypes.test_vulnerability_response_structure() takes 0 positional arguments but 1 was given
+
+..\..\..\..\AppData\Roaming\Python\Python312\site-packages\pytest_asyncio\plugin.py:904: TypeError</failure></testcase><testcase classname="tests.test_crescendo_profiles" name="test_crescendo_profile_runs_until_max_turns_even_if_judge_requests_terminate" time="0.017" /><testcase classname="tests.test_crescendo_profiles" name="test_crescendo_profile_uses_judge_suggested_prompt_for_next_turn" time="0.019" /><testcase classname="tests.test_crescendo_profiles" name="test_crescendo_profile_stops_early_when_attack_succeeds_before_max_turns" time="0.018" /><testcase classname="tests.test_crescendo_profiles" name="test_judge_does_not_terminate_for_benign_system_prompt_explanation" time="0.002" /><testcase classname="tests.test_llm02_detector" name="test_llm02_detector_ignores_safe_refusal_examples" time="0.012" /><testcase classname="tests.test_plugin_loading" name="test_discovers_llm01_scenarios_and_detectors" time="0.021" /><testcase classname="tests.test_plugin_loading" name="test_prompt_injection_includes_multi_turn_attack_taxonomy" time="0.014" /><testcase classname="tests.test_plugin_loading" name="test_prompt_injection_attack_taxonomy_can_be_filtered" time="0.016" /><testcase classname="tests.test_plugin_loading" name="test_prompt_injection_single_turn_payloads_can_be_disabled" time="0.012" /><testcase classname="tests.test_plugin_loading" name="test_discovers_llm02_sensitive_information_plugins" time="0.011" /><testcase classname="tests.test_plugin_loading" name="test_llm02_payloads_can_be_filtered_by_attack_type" time="0.006" /><testcase classname="tests.test_plugin_loading" name="test_llm02_attack_family_probe_counts" time="0.007" /><testcase classname="tests.test_plugin_loading" name="test_llm02_indirect_disclosure_has_full_probe_set" time="0.005" /><testcase classname="tests.test_plugin_loading" name="test_discovers_llm03_supply_chain_plugins" time="0.011" /><testcase classname="tests.test_plugin_loading" name="test_llm03_payloads_can_be_filtered_by_attack_type" time="0.007" /><testcase classname="tests.test_prompt_injection_multi_turn" name="test_prompt_injection_multi_turn_runs_until_max_turns_when_not_successful" time="0.021" /><testcase classname="tests.test_prompt_injection_multi_turn" name="test_prompt_injection_multi_turn_stops_early_on_success" time="0.022" /><testcase classname="tests.test_report_generator" name="test_generate_enterprise_report_contains_required_sections" time="0.004" /><testcase classname="tests.test_scan_orchestrator" name="test_mock_target_scan_completes_and_detects_vulnerability" time="5.565" /><testcase classname="tests.test_target_executor_auth" name="test_workflow_login_uses_form_encoding_and_cookie_session" time="0.024" /><testcase classname="tests.test_target_executor_streaming" name="test_streaming_select_stop_and_session_extraction" time="0.018" /><testcase classname="tests.test_target_executor_streaming" name="test_streaming_raw_done_sentinel_stops_before_parse" time="0.017" /><testcase classname="tests.test_target_executor_streaming" name="test_non_streaming_behavior_remains_supported" time="0.021" /></testsuite></testsuites>
