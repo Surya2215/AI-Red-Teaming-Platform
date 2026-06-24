@@ -1,10 +1,11 @@
-"""Azure OpenAI integration with a deterministic local fallback."""
+"""Multi-provider LLM integration with a deterministic local fallback."""
 
 from __future__ import annotations
 
 import json
 from typing import Any
 
+import httpx
 from pydantic import BaseModel
 
 from core.config import Settings, get_settings
@@ -19,25 +20,68 @@ class LLMResponse(BaseModel):
 
     content: str
     usage: dict[str, Any] = {}
-    provider: str = "azure_openai"
+    provider: str = "local_fallback"
 
 
-class AzureOpenAIClient:
-    """Small wrapper around AzureChatOpenAI with JSON helper methods."""
+class MultiProviderLLMClient:
+    """Small async wrapper for configured LLM providers."""
 
     def __init__(self, settings: Settings | None = None, temperature: float | None = None) -> None:
         self.settings = settings or get_settings()
         self.temperature = temperature if temperature is not None else self.settings.default_temperature
-        self._client: Any | None = None
+        self._azure_client: Any | None = None
 
-    def _get_client(self) -> Any | None:
-        if not self.settings.azure_ready:
-            return None
-        if self._client is None:
+    async def complete(self, system_prompt: str, user_prompt: str) -> LLMResponse:
+        """Run a chat completion through the configured provider."""
+
+        provider = self.settings.llm_provider
+        if not self.settings.llm_ready:
+            logger.warning("Configured LLM provider is not ready; using deterministic local fallback.", extra={"provider": provider})
+            return LLMResponse(content=self._fallback(system_prompt, user_prompt), provider="local_fallback")
+
+        try:
+            if provider == "azure_openai":
+                return await self._complete_azure_openai(system_prompt, user_prompt)
+            if provider == "openai":
+                return await self._complete_openai(system_prompt, user_prompt)
+            if provider == "anthropic":
+                return await self._complete_anthropic(system_prompt, user_prompt)
+            if provider == "huggingface":
+                return await self._complete_huggingface(system_prompt, user_prompt)
+            if provider == "ollama":
+                return await self._complete_ollama(system_prompt, user_prompt)
+            if provider == "aws_bedrock":
+                return await self._complete_aws_bedrock(system_prompt, user_prompt)
+        except Exception as exc:
+            logger.warning(
+                "LLM completion failed; using deterministic local fallback.",
+                extra={"provider": provider, "error_type": exc.__class__.__name__},
+            )
+            return LLMResponse(content=self._fallback(system_prompt, user_prompt), provider="local_fallback")
+
+        return LLMResponse(content=self._fallback(system_prompt, user_prompt), provider="local_fallback")
+
+    async def complete_json(self, system_prompt: str, user_prompt: str) -> dict[str, Any]:
+        """Run a completion and parse a JSON object from the response."""
+
+        result = await self.complete(system_prompt, user_prompt)
+        text = self._strip_json_fence(result.content.strip())
+        try:
+            parsed = json.loads(text)
+            if isinstance(parsed, dict):
+                parsed.setdefault("_provider", result.provider)
+                return parsed
+            return {"_provider": result.provider}
+        except json.JSONDecodeError:
+            logger.warning("LLM returned non-JSON output; applying empty fallback.", extra={"provider": result.provider})
+            return {"_provider": result.provider}
+
+    async def _complete_azure_openai(self, system_prompt: str, user_prompt: str) -> LLMResponse:
+        if self._azure_client is None:
             from langchain_openai import AzureChatOpenAI
 
             api_key = self.settings.azure_openai_api_key.get_secret_value() if self.settings.azure_openai_api_key else None
-            self._client = AzureChatOpenAI(
+            self._azure_client = AzureChatOpenAI(
                 azure_endpoint=self.settings.azure_openai_endpoint,
                 api_key=api_key,
                 azure_deployment=self.settings.azure_openai_deployment,
@@ -45,50 +89,162 @@ class AzureOpenAIClient:
                 temperature=self.temperature,
                 timeout=self.settings.default_timeout_seconds,
                 max_retries=self.settings.default_retry_count,
-                streaming=True,
+                streaming=False,
             )
-        return self._client
 
-    async def complete(self, system_prompt: str, user_prompt: str) -> LLMResponse:
-        """Run a chat completion; fall back to local heuristic mode if not configured."""
+        from langchain_core.messages import HumanMessage, SystemMessage
 
-        client = self._get_client()
-        if client is None:
-            logger.warning("Azure OpenAI is not configured; using deterministic local fallback.")
-            return LLMResponse(content=self._fallback(system_prompt, user_prompt), provider="local_fallback")
+        response = await self._azure_client.ainvoke([SystemMessage(content=system_prompt), HumanMessage(content=user_prompt)])
+        usage = response.response_metadata.get("token_usage", {}) if response.response_metadata else {}
+        return LLMResponse(content=str(response.content), usage=usage, provider="azure_openai")
 
+    async def _complete_openai(self, system_prompt: str, user_prompt: str) -> LLMResponse:
+        api_key = self.settings.openai_api_key.get_secret_value() if self.settings.openai_api_key else ""
+        payload = {
+            "model": self.settings.openai_model,
+            "temperature": self.temperature,
+            "messages": self._chat_messages(system_prompt, user_prompt),
+        }
+        async with httpx.AsyncClient(timeout=self.settings.default_timeout_seconds) as client:
+            response = await client.post(
+                f"{self.settings.openai_base_url.rstrip('/')}/chat/completions",
+                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                json=payload,
+            )
+            response.raise_for_status()
+        data = response.json()
+        return LLMResponse(
+            content=str(data.get("choices", [{}])[0].get("message", {}).get("content", "")),
+            usage=data.get("usage", {}) or {},
+            provider="openai",
+        )
+
+    async def _complete_anthropic(self, system_prompt: str, user_prompt: str) -> LLMResponse:
+        api_key = self.settings.anthropic_api_key.get_secret_value() if self.settings.anthropic_api_key else ""
+        payload = {
+            "model": self.settings.anthropic_model,
+            "system": system_prompt,
+            "messages": [{"role": "user", "content": user_prompt}],
+            "temperature": self.temperature,
+            "max_tokens": 2048,
+        }
+        async with httpx.AsyncClient(timeout=self.settings.default_timeout_seconds) as client:
+            response = await client.post(
+                f"{self.settings.anthropic_base_url.rstrip('/')}/messages",
+                headers={
+                    "x-api-key": api_key,
+                    "anthropic-version": self.settings.anthropic_version,
+                    "Content-Type": "application/json",
+                },
+                json=payload,
+            )
+            response.raise_for_status()
+        data = response.json()
+        content = "".join(block.get("text", "") for block in data.get("content", []) if block.get("type") == "text")
+        return LLMResponse(content=content, usage=data.get("usage", {}) or {}, provider="anthropic")
+
+    async def _complete_huggingface(self, system_prompt: str, user_prompt: str) -> LLMResponse:
+        api_key = self.settings.huggingface_api_key.get_secret_value() if self.settings.huggingface_api_key else ""
+        prompt = f"{system_prompt}\n\nUser:\n{user_prompt}\n\nAssistant:"
+        payload = {
+            "inputs": prompt,
+            "parameters": {
+                "temperature": self.temperature,
+                "max_new_tokens": 1024,
+                "return_full_text": False,
+            },
+        }
+        async with httpx.AsyncClient(timeout=self.settings.default_timeout_seconds) as client:
+            response = await client.post(
+                f"{self.settings.huggingface_base_url.rstrip('/')}/{self.settings.huggingface_model}",
+                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                json=payload,
+            )
+            response.raise_for_status()
+        data = response.json()
+        if isinstance(data, list) and data:
+            content = str(data[0].get("generated_text", ""))
+        elif isinstance(data, dict):
+            content = str(data.get("generated_text") or data.get("summary_text") or "")
+        else:
+            content = ""
+        return LLMResponse(content=content, provider="huggingface")
+
+    async def _complete_ollama(self, system_prompt: str, user_prompt: str) -> LLMResponse:
+        payload = {
+            "model": self.settings.ollama_model,
+            "stream": False,
+            "options": {"temperature": self.temperature},
+            "messages": self._chat_messages(system_prompt, user_prompt),
+        }
+        async with httpx.AsyncClient(timeout=self.settings.default_timeout_seconds) as client:
+            response = await client.post(f"{self.settings.ollama_base_url.rstrip('/')}/api/chat", json=payload)
+            response.raise_for_status()
+        data = response.json()
+        return LLMResponse(content=str(data.get("message", {}).get("content", "")), provider="ollama")
+
+    async def _complete_aws_bedrock(self, system_prompt: str, user_prompt: str) -> LLMResponse:
         try:
-            from langchain_core.messages import HumanMessage, SystemMessage
+            import boto3
+        except ImportError as exc:
+            raise RuntimeError("boto3 is required for AWS Bedrock support. Install boto3 or choose another provider.") from exc
 
-            response = await client.ainvoke([SystemMessage(content=system_prompt), HumanMessage(content=user_prompt)])
-            usage = response.response_metadata.get("token_usage", {}) if response.response_metadata else {}
-            return LLMResponse(content=str(response.content), usage=usage)
-        except Exception as exc:
-            logger.warning(
-                "Azure OpenAI completion failed; using deterministic local fallback.",
-                extra={"error_type": exc.__class__.__name__},
-            )
-            return LLMResponse(content=self._fallback(system_prompt, user_prompt), provider="local_fallback")
+        body = {
+            "anthropic_version": "bedrock-2023-05-31",
+            "system": system_prompt,
+            "messages": [{"role": "user", "content": [{"type": "text", "text": user_prompt}]}],
+            "temperature": self.temperature,
+            "max_tokens": 2048,
+        }
+        client = boto3.client("bedrock-runtime", region_name=self.settings.aws_region)
+        response = await self._run_blocking(
+            client.invoke_model,
+            modelId=self.settings.aws_bedrock_model_id,
+            contentType="application/json",
+            accept="application/json",
+            body=json.dumps(body),
+        )
+        data = json.loads(response["body"].read().decode("utf-8"))
+        content = "".join(block.get("text", "") for block in data.get("content", []) if block.get("type") == "text")
+        return LLMResponse(content=content, usage=data.get("usage", {}) or {}, provider="aws_bedrock")
 
-    async def complete_json(self, system_prompt: str, user_prompt: str) -> dict[str, Any]:
-        """Run a completion and parse a JSON object from the response."""
+    async def _run_blocking(self, func: Any, *args: Any, **kwargs: Any) -> Any:
+        import asyncio
 
-        result = await self.complete(system_prompt, user_prompt)
-        text = result.content.strip()
+        return await asyncio.to_thread(func, *args, **kwargs)
+
+    def _chat_messages(self, system_prompt: str, user_prompt: str) -> list[dict[str, str]]:
+        return [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}]
+
+    def _strip_json_fence(self, text: str) -> str:
         if text.startswith("```"):
             text = text.strip("`")
             text = text.removeprefix("json").strip()
-        try:
-            parsed = json.loads(text)
-            return parsed if isinstance(parsed, dict) else {}
-        except json.JSONDecodeError:
-            logger.warning("LLM returned non-JSON output; applying empty fallback.", extra={"provider": result.provider})
-            return {}
+        first = text.find("{")
+        last = text.rfind("}")
+        if first >= 0 and last > first:
+            return text[first : last + 1]
+        return text
 
     def _fallback(self, system_prompt: str, user_prompt: str) -> str:
         """Deterministic local behavior for development and tests."""
 
         lower = user_prompt.lower()
+        if "target-configuration assistant" in system_prompt.lower():
+            return json.dumps(
+                {
+                    "reply": "I created a local target JSON draft from your guided answers.",
+                    "target": {
+                        "name": "Generated Target",
+                        "url": "mock://internal-hr-chatbot",
+                        "method": "POST",
+                        "headers": {"Content-Type": "application/json"},
+                        "request_template": {"message": "{{prompt}}"},
+                        "auth": {"type": "none"},
+                        "timeout_seconds": 30,
+                    },
+                }
+            )
         if "judge" in system_prompt.lower():
             risk = 0.78 if any(term in lower for term in ["ignore", "system", "developer", "secret", "policy"]) else 0.35
             return json.dumps(
@@ -111,3 +267,6 @@ class AzureOpenAIClient:
                 "severity": "HIGH" if vulnerable else "INFO",
             }
         )
+
+
+AzureOpenAIClient = MultiProviderLLMClient

@@ -1,0 +1,15 @@
+{
+  "name": "vulnerable chatbot",
+  "url": "http://ec2-13-201-121-27.ap-south-1.compute.amazonaws.com:8001/chat",
+  "method": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "request_template": {
+    "message": "{{prompt}}"
+  },
+  "auth": {
+    "type": "none"
+  },
+  "timeout_seconds": 120.0
+}

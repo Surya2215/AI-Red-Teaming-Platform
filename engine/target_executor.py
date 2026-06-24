@@ -106,6 +106,28 @@ class TargetExecutor:
                         await asyncio.sleep(0.5 * (attempt + 1))
         raise TargetExecutionError(f"Target request failed after retries: {last_error}")
 
+    async def test_connection(self, target: TargetConfig, sample_message: str = "hi") -> dict[str, Any]:
+        """Run a single lightweight probe and return a UI/API friendly summary."""
+
+        probe = AttackPrompt(prompt=sample_message, category="connectivity", stage="test_call")
+        try:
+            response = await self.execute(target=target, attack_prompt=probe, conversation_id=f"test-{int(time.time())}")
+            return {
+                "ok": response.error is None and 200 <= response.status_code < 500,
+                "status_code": response.status_code,
+                "elapsed_ms": round(response.elapsed_ms, 2),
+                "preview": response.body[:600],
+                "error": response.error,
+            }
+        except Exception as exc:
+            return {
+                "ok": False,
+                "status_code": 0,
+                "elapsed_ms": 0,
+                "preview": "",
+                "error": str(exc),
+            }
+
     def _workflow_config(self, target: TargetConfig) -> dict[str, Any]:
         auth = target.auth or {}
         workflow = auth.get("workflow") or {}

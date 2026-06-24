@@ -1,6 +1,6 @@
 # AI Red Teaming and LLM Security Assessment Platform
 
-Enterprise-grade LLM vulnerability assessment platform focused on the OWASP LLM Top 10. The initial implementation ships with OWASP LLM01 prompt-injection checks, single-turn attacks, multi-turn Crescendo attack orchestration, Azure OpenAI judge/detector support, Streamlit UI, FastAPI API, SQLAlchemy persistence, and JSON target templates.
+Enterprise-grade LLM vulnerability assessment platform focused on the OWASP LLM Top 10. The implementation ships with OWASP LLM01 prompt-injection checks, single-turn attacks, multi-turn Crescendo attack orchestration, multi-provider LLM judge/detector support, React frontend, FastAPI API, PostgreSQL-backed SQLAlchemy persistence, and JSON target templates.
 
 ## Quick Start
 
@@ -8,13 +8,21 @@ Enterprise-grade LLM vulnerability assessment platform focused on the OWASP LLM 
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
-streamlit run ui/app.py
+uvicorn core.api:app --reload
 ```
 
-Run the API:
+Set PostgreSQL in `.env` when running locally outside Docker:
+
+```env
+DATABASE_URL=postgresql+asyncpg://redteam:redteam@localhost:5432/redteam
+```
+
+Run the React frontend:
 
 ```bash
-uvicorn core.api:app --reload
+cd frontend
+npm install
+npm run dev
 ```
 
 Run tests:
@@ -23,18 +31,19 @@ Run tests:
 pytest
 ```
 
-## Azure OpenAI
+## LLM Providers
 
-Set credentials in `.env`:
+Select the model provider from the Configurations page, or set it in `.env`:
 
 ```env
+LLM_PROVIDER=azure_openai
 AZURE_OPENAI_ENDPOINT=
 AZURE_OPENAI_API_KEY=
 AZURE_OPENAI_DEPLOYMENT=
 AZURE_OPENAI_API_VERSION=2024-12-01-preview
 ```
 
-If Azure OpenAI is not configured, the platform uses a deterministic local fallback so the demo, tests, and mock target remain runnable.
+Supported providers are Azure OpenAI, OpenAI, AWS Bedrock, Ollama localhost, Hugging Face, and Anthropic. If the configured provider is not ready, the platform uses a deterministic local fallback so the demo, tests, and mock target remain runnable.
 
 ## Repository Layout
 
@@ -43,7 +52,8 @@ checks/       Dynamic detector plugins
 scenarios/    Dynamic attack scenario plugins
 targets/      JSON target templates
 engine/       Orchestration, loaders, judge, target execution
-ui/           Streamlit frontend
+frontend/     React frontend
+ui/           Legacy Streamlit frontend
 core/         Settings, schemas, API, LLM client, logging
 database/     SQLAlchemy models and repository
 reports/      Generated JSON/PDF reports
@@ -57,7 +67,7 @@ docs/         Architecture, mockups, examples
 
 ```mermaid
 flowchart LR
-    UI["Streamlit UI"] --> API["FastAPI API"]
+    UI["React UI"] --> API["FastAPI API"]
     UI --> ORCH["Scan Orchestrator"]
     API --> ORCH
     ORCH --> AE["Attack Engine"]
@@ -66,10 +76,10 @@ flowchart LR
     DE --> DL["Detector Loader"]
     AE --> TE["Target Executor"]
     AE --> JA["Judge Agent"]
-    JA --> AOAI["Azure OpenAI"]
-    DE --> AOAI
+    JA --> LLM["Configured LLM Provider"]
+    DE --> LLM
     TE --> TARGET["Target App"]
-    ORCH --> DB["SQLite / PostgreSQL-ready SQLAlchemy"]
+    ORCH --> DB["PostgreSQL / asyncpg SQLAlchemy"]
     ORCH --> REPORTS["Reports"]
     ORCH --> LOGS["JSON Logs"]
 ```
@@ -169,5 +179,5 @@ docker compose up --build
 ```
 
 API: `http://localhost:8000`  
-UI: `http://localhost:8501`
+Frontend: `http://localhost:5173`
 
