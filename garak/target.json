@@ -1,0 +1,11 @@
+{
+  "uri": "http://ec2-13-201-121-27.ap-south-1.compute.amazonaws.com:8001/chat",
+  "method": "post",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "req_template": "{\"message\":\"$INPUT\"}",
+  "response_json": true,
+  "response_json_field": "response",
+  "request_timeout": 120
+}

@@ -1,0 +1,11 @@
+node_modules
+dist
+.vite
+
+.git
+.agents
+.codex
+.vscode
+
+*.log
+npm-debug.log*

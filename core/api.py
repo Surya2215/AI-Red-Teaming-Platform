@@ -21,6 +21,7 @@ from engine.report_generator import generate_enterprise_report
 from engine.scan_orchestrator import ScanOrchestrator
 from engine.scenario_loader import PluginLoader
 from engine.target_executor import TargetExecutor
+from engine.tool_scan import ToolScanRequest, ToolScanResult, list_tool_connectors, run_tool_scan
 
 
 app = FastAPI(title="AI Red Teaming Platform", version="1.0.0")
@@ -246,6 +247,16 @@ async def cancel_scan(scan_id: str) -> dict[str, str]:
     return {"status": "cancel_requested", "scan_id": scan_id}
 
 
+@app.get("/tool-scans/tools")
+async def tool_scan_tools() -> dict[str, Any]:
+    return {"tools": list_tool_connectors()}
+
+
+@app.post("/tool-scans/run", response_model=ToolScanResult)
+async def start_tool_scan(request: ToolScanRequest) -> ToolScanResult:
+    return run_tool_scan(request)
+
+
 @app.get("/reports")
 async def list_reports() -> list[dict[str, Any]]:
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
@@ -438,4 +449,3 @@ def _scenario_turn_counts(plugin: Any) -> dict[str, int]:
             single += 9
 
     return {"single_turn": single, "multi_turn": multi, "total": single + multi}
-

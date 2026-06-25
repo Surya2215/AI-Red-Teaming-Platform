@@ -102,7 +102,7 @@ function App() {
           <Simulations targets={targets} reports={reports} scenarios={scenarios} refresh={refresh} setPage={setPage} setNotice={setNotice} />
         )}
         {page === "Reports" && <Reports reports={reports} />}
-        {page === "Tool scan" && <ToolScan />}
+        {page === "Tool scan" && <ToolScan targets={targets} setNotice={setNotice} />}
         {page === "Configurations" && <Configurations settings={settings} setSettings={setSettings} setNotice={setNotice} />}
       </main>
     </div>
@@ -580,6 +580,7 @@ function AssistantTargetBuilder({ messages, input, setInput, send, clear, loadin
 }
 
 function ManualTargetForm({ initial = emptyTarget, filename = "", refresh, setNotice, onSaved, onDraftChange }) {
+  const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     name: initial.name,
     url: initial.url,
@@ -624,19 +625,27 @@ function ManualTargetForm({ initial = emptyTarget, filename = "", refresh, setNo
 
   const save = async event => {
     event.preventDefault();
-    const payload = {
-      name: form.name,
-      url: form.url,
-      method: form.method,
-      headers: JSON.parse(form.headers || "{}"),
-      request_template: JSON.parse(form.request_template || "{}"),
-      auth: JSON.parse(form.auth || "{}"),
-      timeout_seconds: form.timeout_seconds ? Number(form.timeout_seconds) : null,
-    };
-    const saved = await api(filename ? `/targets/${filename}` : "/targets", { method: filename ? "PUT" : "POST", body: payload });
-    setNotice("Target saved.");
-    await refresh();
-    onSaved?.(saved, payload);
+    if (saving) return;
+    setSaving(true);
+    try {
+      const payload = {
+        name: form.name,
+        url: form.url,
+        method: form.method,
+        headers: JSON.parse(form.headers || "{}"),
+        request_template: JSON.parse(form.request_template || "{}"),
+        auth: JSON.parse(form.auth || "{}"),
+        timeout_seconds: form.timeout_seconds ? Number(form.timeout_seconds) : null,
+      };
+      const saved = await api(filename ? `/targets/${filename}` : "/targets", { method: filename ? "PUT" : "POST", body: payload });
+      setNotice("Target saved.");
+      await refresh();
+      onSaved?.(saved, payload);
+    } catch (error) {
+      setNotice(`Unable to save target: ${error.message}`);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -651,7 +660,7 @@ function ManualTargetForm({ initial = emptyTarget, filename = "", refresh, setNo
       <Field label="Headers JSON"><textarea rows={5} value={form.headers} onChange={e => updateForm({ headers: e.target.value })} /></Field>
       <Field label="Request body template JSON"><textarea rows={6} value={form.request_template} onChange={e => updateForm({ request_template: e.target.value })} /></Field>
       <Field label="Auth config JSON"><textarea rows={6} value={form.auth} onChange={e => updateForm({ auth: e.target.value })} /></Field>
-      <div className="action-row"><button className="primary-button"><Save size={16} />Save target</button></div>
+      <div className="action-row"><button className="primary-button" type="submit" disabled={saving}><Save size={16} />{saving ? "Saving..." : "Save target"}</button></div>
     </form>
   );
 }
@@ -923,7 +932,7 @@ const TOOL_SCAN_TOOLS = [
     id: "garak",
     name: "Garak",
     purpose: "Probe LLM applications with model and plugin based vulnerability checks.",
-    command: "garak --model_type rest --model_name target",
+    command: "garak --target_type ollama --target_name llama3.2 --probe_tags owasp",
     status: "Ready for connector",
   },
   {
@@ -942,18 +951,120 @@ const TOOL_SCAN_TOOLS = [
   },
 ];
 
-function ToolScan() {
+const GARAK_TARGET_TYPES = [
+  "ollama",
+  "openai",
+  "azure",
+  "groq",
+  "huggingface",
+  "rest",
+  "websocket",
+  "rasa",
+  "bedrock",
+  "cohere",
+  "litellm",
+  "mistral",
+  "replicate",
+  "watsonx",
+  "nim",
+  "nvcf",
+  "ggml",
+  "langchain",
+  "langchain_serve",
+];
+
+const GARAK_PROBE_MODES = [
+  ["owasp", "OWASP probes"],
+  ["all", "All probes"],
+  ["specific", "Specific probe"],
+  ["tag", "Probe tag"],
+];
+
+const GARAK_COMMON_PROBES = [
+  "lmrc.Profanity",
+  "dan.DanInTheWild",
+  "promptinject.HijackHateHumans",
+  "encoding.InjectBase64",
+  "malwaregen.TopLevel",
+  "xss.MarkdownExfilBasic",
+];
+
+function ToolScan({ targets, setNotice }) {
   const [selectedTool, setSelectedTool] = useState("garak");
-  const tool = TOOL_SCAN_TOOLS.find(item => item.id === selectedTool) || TOOL_SCAN_TOOLS[0];
+  const [connectors, setConnectors] = useState(TOOL_SCAN_TOOLS);
+  const [selectedTarget, setSelectedTarget] = useState(targets[0]?.filename || "");
+  const [profile, setProfile] = useState("standard");
+  const [options, setOptions] = useState("");
+  const [timeoutSeconds, setTimeoutSeconds] = useState(120);
+  const [garakTargetType, setGarakTargetType] = useState("ollama");
+  const [garakTargetName, setGarakTargetName] = useState("llama3.2");
+  const [garakProbeMode, setGarakProbeMode] = useState("owasp");
+  const [garakProbeValue, setGarakProbeValue] = useState("lmrc.Profanity");
+  const [running, setRunning] = useState(false);
+  const [result, setResult] = useState(null);
+  const tool = connectors.find(item => item.id === selectedTool) || connectors[0] || TOOL_SCAN_TOOLS[0];
+  const isGarak = selectedTool === "garak";
+  const targetItem = targets.find(item => item.filename === selectedTarget) || targets[0];
+  const target = targetItem?.target || emptyTarget;
+  const garakTargetTypes = tool.target_types?.length ? tool.target_types : GARAK_TARGET_TYPES;
+  const commandText = result?.command?.length ? result.command.join(" ") : isGarak ? garakCommandPreview({ garakTargetType, garakTargetName, garakProbeMode, garakProbeValue }) : (tool.command_template || tool.command);
+
+  useEffect(() => {
+    if (!selectedTarget && targets[0]?.filename) {
+      setSelectedTarget(targets[0].filename);
+    }
+  }, [selectedTarget, targets]);
+
+  useEffect(() => {
+    let active = true;
+    api("/tool-scans/tools")
+      .then(data => {
+        if (active) {
+          setConnectors(data.tools || TOOL_SCAN_TOOLS);
+        }
+      })
+      .catch(error => setNotice(error.message));
+    return () => {
+      active = false;
+    };
+  }, [setNotice]);
+
+  const submit = async dryRun => {
+    setRunning(true);
+    setResult(null);
+    try {
+      const scanResult = await api("/tool-scans/run", {
+        method: "POST",
+        body: {
+          tool_id: selectedTool,
+          target: isGarak ? undefined : target,
+          profile,
+          options,
+          timeout_seconds: Number(timeoutSeconds) || 120,
+          dry_run: dryRun,
+          garak_target_type: garakTargetType,
+          garak_target_name: garakTargetName,
+          garak_probe_mode: garakProbeMode,
+          garak_probe_value: garakProbeValue,
+        },
+      });
+      setResult(scanResult);
+      setNotice(dryRun ? `${scanResult.tool_name} command validated.` : `${scanResult.tool_name} scan finished with status ${scanResult.status}.`);
+    } catch (error) {
+      setNotice(error.message);
+    } finally {
+      setRunning(false);
+    }
+  };
 
   return (
     <section>
       <h1>Tool scan</h1>
-      <PageIntro title="External Tool Scan" subtitle="Prepare scan jobs for Garak, PyRIT, and DeepTeam integrations." chips={["Garak", "PyRIT", "DeepTeam"]} />
+      <PageIntro title="External Tool Scan" subtitle="Run Garak CLI scans or saved-target scans for PyRIT and DeepTeam." chips={["Garak CLI", "PyRIT", "DeepTeam"]} />
       <div className="tool-scan-grid">
-        {TOOL_SCAN_TOOLS.map(item => (
+        {connectors.map(item => (
           <button key={item.id} className={selectedTool === item.id ? "tool-scan-card active" : "tool-scan-card"} onClick={() => setSelectedTool(item.id)} type="button">
-            <span>{item.status}</span>
+            <span>{item.available ? "Available" : item.status || "Not installed"}</span>
             <strong>{item.name}</strong>
             <p>{item.purpose}</p>
           </button>
@@ -966,34 +1077,112 @@ function ToolScan() {
             <h2>{tool.name} scan setup</h2>
             <p className="muted">{tool.purpose}</p>
           </div>
-          <span className="status-pill running">Connector pending</span>
+          <span className={`status-pill ${tool.available ? "complete" : "failed"}`}>{tool.available ? "Connector ready" : "Tool missing"}</span>
         </div>
+        {!isGarak && !targets.length && <div className="alert info">Create or save a target before running this external tool scan. The form is showing the mock target as a placeholder.</div>}
+        {isGarak ? (
+          <>
+            <div className="form-grid three-cols">
+              <Field label="Model type">
+                <select value={garakTargetType} onChange={event => setGarakTargetType(event.target.value)}>
+                  {garakTargetTypes.map(item => <option key={item} value={item}>{titleCase(item)}</option>)}
+                </select>
+              </Field>
+              <Field label="Model name"><input value={garakTargetName} onChange={event => setGarakTargetName(event.target.value)} placeholder="llama3.2, gpt-4.1, deployment name..." /></Field>
+              <Field label="Probe type">
+                <select value={garakProbeMode} onChange={event => {
+                  const nextMode = event.target.value;
+                  setGarakProbeMode(nextMode);
+                  if (nextMode === "specific") setGarakProbeValue("lmrc.Profanity");
+                  if (nextMode === "tag") setGarakProbeValue("owasp");
+                }}>
+                  {GARAK_PROBE_MODES.map(([id, label]) => <option key={id} value={id}>{label}</option>)}
+                </select>
+              </Field>
+            </div>
+            {(garakProbeMode === "specific" || garakProbeMode === "tag") && (
+              <Field label={garakProbeMode === "specific" ? "Probe" : "Probe tag"}>
+                <input list={garakProbeMode === "specific" ? "garak-common-probes" : undefined} value={garakProbeValue} onChange={event => setGarakProbeValue(event.target.value)} placeholder={garakProbeMode === "specific" ? "lmrc.Profanity" : "owasp"} />
+                <datalist id="garak-common-probes">
+                  {GARAK_COMMON_PROBES.map(item => <option key={item} value={item} />)}
+                </datalist>
+              </Field>
+            )}
+          </>
+        ) : (
+          <div className="form-grid">
+            <Field label="Target source">
+              <select value={selectedTarget} onChange={event => setSelectedTarget(event.target.value)} disabled={!targets.length}>
+                {targets.map(item => <option key={item.filename} value={item.filename}>{item.target.name}</option>)}
+                {!targets.length && <option value="">Mock target placeholder</option>}
+              </select>
+            </Field>
+            <Field label="Scan profile">
+              <select value={profile} onChange={event => setProfile(event.target.value)}>
+                {(tool.profiles || ["quick", "standard", "deep"]).map(item => <option key={item} value={item}>{titleCase(item)}</option>)}
+              </select>
+            </Field>
+          </div>
+        )}
         <div className="form-grid">
-          <Field label="Target source">
-            <select defaultValue="saved_target">
-              <option value="saved_target">Saved target configuration</option>
-              <option value="json_upload">Upload target JSON</option>
-              <option value="manual_endpoint">Manual endpoint</option>
-            </select>
-          </Field>
-          <Field label="Scan profile">
-            <select defaultValue="standard">
-              <option value="standard">Standard</option>
-              <option value="quick">Quick</option>
-              <option value="deep">Deep</option>
-            </select>
-          </Field>
+          <Field label="Timeout seconds"><input type="number" min="5" max="1800" value={timeoutSeconds} onChange={event => setTimeoutSeconds(event.target.value)} /></Field>
+          <Field label="Executable"><input readOnly value={tool.executable_path || tool.executable || "not found"} /></Field>
         </div>
-        <Field label="Command template"><input readOnly value={tool.command} /></Field>
-        <Field label="Tool-specific options"><textarea rows={5} placeholder="Add CLI flags, plugin names, scorer settings, or dataset paths for this tool." /></Field>
+        <Field label="Command template"><input readOnly value={commandText} /></Field>
+        <Field label="Tool-specific options"><textarea rows={5} value={options} onChange={event => setOptions(event.target.value)} placeholder="Add CLI flags, plugin names, scorer settings, or dataset paths for this tool." /></Field>
         <div className="action-row">
-          <button className="secondary-button" type="button" disabled>Validate configuration</button>
-          <button className="primary-button" type="button" disabled><Play size={16} />Run tool scan</button>
+          <button className="secondary-button" type="button" onClick={() => submit(true)} disabled={running}>Validate configuration</button>
+          <button className="primary-button" type="button" onClick={() => submit(false)} disabled={running || (!isGarak && !targets.length) || (isGarak && !garakTargetName.trim())}><Play size={16} />{running ? "Running..." : "Run tool scan"}</button>
         </div>
-        <p className="muted">This page is ready for backend connector wiring. The run controls are disabled until the Garak, PyRIT, and DeepTeam executors are connected.</p>
+        {tool.install_hint && !tool.available && <p className="muted">{tool.install_hint}</p>}
+        {result && <ToolScanResult result={result} />}
       </div>
     </section>
   );
+}
+
+function ToolScanResult({ result }) {
+  return (
+    <div className="tool-scan-result">
+      <div className="tool-scan-result-header">
+        <strong>{result.tool_name} result</strong>
+        <span className={`status-pill ${result.status === "COMPLETED" || result.status === "VALIDATED" ? "complete" : "failed"}`}>{result.status}</span>
+      </div>
+      {result.error && <div className="alert error"><AlertTriangle size={18} /><span>{result.error}</span></div>}
+      {result.install_hint && <p className="muted">{result.install_hint}</p>}
+      <Field label="Executed command"><input readOnly value={(result.command || []).join(" ")} /></Field>
+      {!!result.report_paths?.length && (
+        <Field label="Generated reports">
+          <textarea readOnly rows={Math.min(6, result.report_paths.length + 1)} value={result.report_paths.join("\n")} />
+        </Field>
+      )}
+      <div className="form-grid">
+        <Field label="Return code"><input readOnly value={result.return_code ?? "-"} /></Field>
+        <Field label="Scan ID"><input readOnly value={result.scan_id} /></Field>
+      </div>
+      {(result.stdout || result.stderr) && (
+        <div className="form-grid">
+          <Field label="stdout"><textarea readOnly rows={8} value={result.stdout || ""} /></Field>
+          <Field label="stderr"><textarea readOnly rows={8} value={result.stderr || ""} /></Field>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function garakCommandPreview({ garakTargetType, garakTargetName, garakProbeMode, garakProbeValue }) {
+  const command = ["garak", "--target_type", garakTargetType, "--target_name", garakTargetName || "<model_name>"];
+  if (garakProbeMode === "all") {
+    command.push("--probes", "all");
+  } else if (garakProbeMode === "specific") {
+    command.push("--probes", garakProbeValue || "<probe>");
+  } else if (garakProbeMode === "tag") {
+    command.push("--probe_tags", garakProbeValue || "<probe_tag>");
+  } else {
+    command.push("--probe_tags", "owasp");
+  }
+  command.push("--report_prefix", "reports/tool-scans/garak-<scan_id>");
+  return command.join(" ");
 }
 
 const LLM_PROVIDER_OPTIONS = [
@@ -1147,6 +1336,10 @@ function providerLabel(provider) {
   return LLM_PROVIDER_OPTIONS.find(([id]) => id === provider)?.[1] || provider;
 }
 
+function titleCase(value) {
+  return String(value || "").replace(/[_-]+/g, " ").replace(/\b\w/g, char => char.toUpperCase());
+}
+
 function PageIntro({ title, subtitle, chips }) {
   return <><div className="page-hero"><h3>{title}</h3><p>{subtitle}</p></div><div className="accent-strip">{chips.map(chip => <span className="accent-pill" key={chip}>{chip}</span>)}</div></>;
 }
@@ -1199,7 +1392,18 @@ async function api(path, options = {}) {
   });
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(text || `Request failed: ${response.status}`);
+    let message = text;
+    try {
+      const parsed = JSON.parse(text);
+      if (Array.isArray(parsed.detail)) {
+        message = parsed.detail.map(item => `${item.loc?.slice(1).join(".") || "field"}: ${item.msg}`).join("; ");
+      } else if (parsed.detail) {
+        message = String(parsed.detail);
+      }
+    } catch {
+      // Fall back to the raw response text.
+    }
+    throw new Error(message || `Request failed: ${response.status}`);
   }
   return response.json();
 }

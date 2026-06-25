@@ -1,11 +1,7 @@
-from dotenv import load_dotenv
-import os
+from garak.generators.rest import RestGenerator
 
-load_dotenv()
+g = RestGenerator(
+    uri="http://ec2-13-201-121-27.ap-south-1.compute.amazonaws.com:8001/chat"
+)
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-
-if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY not found in .env")
-
-print("Loaded Key:", GROQ_API_KEY[:10], "...")
+print(g.uri)
