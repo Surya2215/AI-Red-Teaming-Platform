@@ -31,6 +31,15 @@ Run tests:
 pytest
 ```
 
+Run the mock-chatbot regression suite after feature changes:
+
+```bash
+python run_regression_tests.py
+```
+
+The runner discovers every scenario plugin, executes it against `mock://` targets,
+runs matching detectors, and writes `reports/regression/regression-summary.json`.
+
 ## LLM Providers
 
 Select the model provider from the Configurations page, or set it in `.env`:
