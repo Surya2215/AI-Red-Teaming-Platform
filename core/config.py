@@ -28,6 +28,10 @@ class Settings(BaseSettings):
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
     log_dir: Path = ROOT_DIR / "logs"
     report_dir: Path = ROOT_DIR / "reports"
+    celery_broker_url: str = Field(default="amqp://redteam:redteam@localhost:5672//", alias="CELERY_BROKER_URL")
+    celery_result_backend: str = Field(default="redis://localhost:6379/0", alias="CELERY_RESULT_BACKEND")
+    celery_task_default_queue: str = Field(default="tool-scans", alias="CELERY_TASK_DEFAULT_QUEUE")
+    tool_worker_enabled: bool = Field(default=True, alias="TOOL_WORKER_ENABLED")
 
     llm_provider: Literal["azure_openai", "aws_bedrock", "ollama", "openai", "huggingface", "anthropic"] = Field(
         default="azure_openai",

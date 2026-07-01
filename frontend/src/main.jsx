@@ -1002,8 +1002,11 @@ function ToolScan({ targets, setNotice }) {
   const [garakProbeValue, setGarakProbeValue] = useState("lmrc.Profanity");
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState(null);
+  const [job, setJob] = useState(null);
+  const [queue, setQueue] = useState(null);
   const tool = connectors.find(item => item.id === selectedTool) || connectors[0] || TOOL_SCAN_TOOLS[0];
   const isGarak = selectedTool === "garak";
+  const isWorkerMode = tool.execution_mode === "worker_queue";
   const targetItem = targets.find(item => item.filename === selectedTarget) || targets[0];
   const target = targetItem?.target || emptyTarget;
   const garakTargetTypes = tool.target_types?.length ? tool.target_types : GARAK_TARGET_TYPES;
@@ -1021,6 +1024,7 @@ function ToolScan({ targets, setNotice }) {
       .then(data => {
         if (active) {
           setConnectors(data.tools || TOOL_SCAN_TOOLS);
+          setQueue(data.queue || null);
         }
       })
       .catch(error => setNotice(error.message));
@@ -1032,24 +1036,33 @@ function ToolScan({ targets, setNotice }) {
   const submit = async dryRun => {
     setRunning(true);
     setResult(null);
+    setJob(null);
     try {
-      const scanResult = await api("/tool-scans/run", {
+      const body = {
+        tool_id: selectedTool,
+        target: isGarak ? undefined : target,
+        profile,
+        options,
+        timeout_seconds: Number(timeoutSeconds) || 120,
+        dry_run: dryRun,
+        garak_target_type: garakTargetType,
+        garak_target_name: garakTargetName,
+        garak_probe_mode: garakProbeMode,
+        garak_probe_value: garakProbeValue,
+      };
+      const queued = await api("/tool-scans/submit", {
         method: "POST",
-        body: {
-          tool_id: selectedTool,
-          target: isGarak ? undefined : target,
-          profile,
-          options,
-          timeout_seconds: Number(timeoutSeconds) || 120,
-          dry_run: dryRun,
-          garak_target_type: garakTargetType,
-          garak_target_name: garakTargetName,
-          garak_probe_mode: garakProbeMode,
-          garak_probe_value: garakProbeValue,
-        },
+        body,
       });
-      setResult(scanResult);
-      setNotice(dryRun ? `${scanResult.tool_name} command validated.` : `${scanResult.tool_name} scan finished with status ${scanResult.status}.`);
+      setJob(queued);
+      setNotice(dryRun ? `${queued.tool_name} validation queued.` : `${queued.tool_name} scan queued.`);
+      const finished = await pollToolScanJob(queued.job_id, setJob);
+      if (finished.result) {
+        setResult(finished.result);
+        setNotice(dryRun ? `${finished.result.tool_name} command validated on worker.` : `${finished.result.tool_name} scan finished with status ${finished.result.status}.`);
+      } else {
+        setNotice(`${queued.tool_name} job finished with status ${finished.status}.`);
+      }
     } catch (error) {
       setNotice(error.message);
     } finally {
@@ -1077,8 +1090,14 @@ function ToolScan({ targets, setNotice }) {
             <h2>{tool.name} scan setup</h2>
             <p className="muted">{tool.purpose}</p>
           </div>
-          <span className={`status-pill ${tool.available ? "complete" : "failed"}`}>{tool.available ? "Connector ready" : "Tool missing"}</span>
+          <span className={`status-pill ${tool.available ? "complete" : "failed"}`}>{tool.status || (tool.available ? "Connector ready" : "Tool missing")}</span>
         </div>
+        {queue && (
+          <div className="alert info">
+            <RefreshCw size={18} />
+            <span>Execution mode: {isWorkerMode ? "EC2 worker queue" : "local process"} via {queue.queue}.</span>
+          </div>
+        )}
         {!isGarak && !targets.length && <div className="alert info">Create or save a target before running this external tool scan. The form is showing the mock target as a placeholder.</div>}
         {isGarak ? (
           <>
@@ -1126,19 +1145,36 @@ function ToolScan({ targets, setNotice }) {
         )}
         <div className="form-grid">
           <Field label="Timeout seconds"><input type="number" min="5" max="1800" value={timeoutSeconds} onChange={event => setTimeoutSeconds(event.target.value)} /></Field>
-          <Field label="Executable"><input readOnly value={tool.executable_path || tool.executable || "not found"} /></Field>
+          <Field label="Execution target"><input readOnly value={isWorkerMode ? "EC2 Celery worker" : (tool.executable_path || tool.executable || "not found")} /></Field>
         </div>
         <Field label="Command template"><input readOnly value={commandText} /></Field>
         <Field label="Tool-specific options"><textarea rows={5} value={options} onChange={event => setOptions(event.target.value)} placeholder="Add CLI flags, plugin names, scorer settings, or dataset paths for this tool." /></Field>
         <div className="action-row">
           <button className="secondary-button" type="button" onClick={() => submit(true)} disabled={running}>Validate configuration</button>
-          <button className="primary-button" type="button" onClick={() => submit(false)} disabled={running || (!isGarak && !targets.length) || (isGarak && !garakTargetName.trim())}><Play size={16} />{running ? "Running..." : "Run tool scan"}</button>
+          <button className="primary-button" type="button" onClick={() => submit(false)} disabled={running || (!isGarak && !targets.length) || (isGarak && !garakTargetName.trim())}><Play size={16} />{running ? "Queued..." : "Run tool scan"}</button>
         </div>
         {tool.install_hint && !tool.available && <p className="muted">{tool.install_hint}</p>}
+        {job && (
+          <div className="alert info">
+            <RefreshCw size={18} />
+            <span>Worker job {job.job_id} is {job.status}.</span>
+          </div>
+        )}
         {result && <ToolScanResult result={result} />}
       </div>
     </section>
   );
+}
+
+async function pollToolScanJob(jobId, onUpdate) {
+  const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+  for (let attempt = 0; attempt < 600; attempt += 1) {
+    const status = await api(`/tool-scans/jobs/${jobId}`);
+    onUpdate(status);
+    if (status.ready || status.result) return status;
+    await wait(2000);
+  }
+  throw new Error("Tool scan job polling timed out.");
 }
 
 function ToolScanResult({ result }) {

@@ -133,10 +133,11 @@ class ToolScanResult(BaseModel):
     report_paths: list[str] = Field(default_factory=list)
 
 
-def list_tool_connectors() -> list[dict[str, Any]]:
+def list_tool_connectors(worker_mode: bool = False) -> list[dict[str, Any]]:
     connectors: list[dict[str, Any]] = []
     for tool in TOOL_DEFINITIONS.values():
         executable_path = shutil.which(tool.executable)
+        available = True if worker_mode else executable_path is not None
         connectors.append(
             {
                 "id": tool.id,
@@ -145,8 +146,14 @@ def list_tool_connectors() -> list[dict[str, Any]]:
                 "profiles": list(tool.profiles),
                 "executable": tool.executable,
                 "executable_path": executable_path,
-                "available": executable_path is not None,
-                "install_hint": tool.install_hint,
+                "available": available,
+                "execution_mode": "worker_queue" if worker_mode else "local_process",
+                "status": "Queued on EC2 worker" if worker_mode else ("Connector ready" if executable_path else "Tool missing"),
+                "install_hint": (
+                    f"Install {tool.name} on the EC2 Celery worker and keep the worker subscribed to the tool-scans queue."
+                    if worker_mode
+                    else tool.install_hint
+                ),
                 "command_template": _command_template(tool.id),
                 "target_types": list(GARAK_TARGET_TYPES) if tool.id == "garak" else [],
                 "probe_modes": list(GARAK_PROBE_PRESETS.keys()) + ["custom_probe", "custom_tag"] if tool.id == "garak" else [],

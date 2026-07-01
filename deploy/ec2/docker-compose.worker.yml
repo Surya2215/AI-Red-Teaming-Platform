@@ -1,0 +1,16 @@
+services:
+  tool-worker:
+    build:
+      context: ../..
+    env_file:
+      - ../../.env
+    environment:
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL:-amqp://redteam:redteam@rabbitmq:5672//}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-redis://valkey:6379/0}
+      CELERY_TASK_DEFAULT_QUEUE: ${CELERY_TASK_DEFAULT_QUEUE:-tool-scans}
+    volumes:
+      - ../../logs:/app/logs
+      - ../../reports:/app/reports
+      - ../../targets:/app/targets
+    restart: unless-stopped
+    command: celery -A engine.tool_tasks.celery_app worker --loglevel=INFO --queues=${CELERY_TASK_DEFAULT_QUEUE:-tool-scans} --concurrency=1

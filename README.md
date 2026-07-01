@@ -40,6 +40,17 @@ python run_regression_tests.py
 The runner discovers every scenario plugin, executes it against `mock://` targets,
 runs matching detectors, and writes `reports/regression/regression-summary.json`.
 
+Run external tool scans through workers:
+
+```bash
+docker compose up --build
+```
+
+The compose stack includes RabbitMQ, Valkey, the API, frontend, and a Celery
+tool worker. See `docs/tool-worker-deployment.md` for EC2 deployment guidance.
+For step-by-step EC2 commands and queue smoke tests, see
+`docs/ec2-tool-worker-runbook.md`.
+
 ## LLM Providers
 
 Select the model provider from the Configurations page, or set it in `.env`:

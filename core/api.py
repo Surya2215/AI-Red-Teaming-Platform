@@ -22,6 +22,7 @@ from engine.scan_orchestrator import ScanOrchestrator
 from engine.scenario_loader import PluginLoader
 from engine.target_executor import TargetExecutor
 from engine.tool_scan import ToolScanRequest, ToolScanResult, list_tool_connectors, run_tool_scan
+from engine.tool_queue import ToolScanJobStatus, ToolScanQueuedResult, get_tool_scan_job, queue_health, submit_tool_scan
 
 
 app = FastAPI(title="AI Red Teaming Platform", version="1.0.0")
@@ -249,12 +250,29 @@ async def cancel_scan(scan_id: str) -> dict[str, str]:
 
 @app.get("/tool-scans/tools")
 async def tool_scan_tools() -> dict[str, Any]:
-    return {"tools": list_tool_connectors()}
+    health = queue_health()
+    return {"tools": list_tool_connectors(worker_mode=bool(health["worker_enabled"])), "queue": health}
 
 
 @app.post("/tool-scans/run", response_model=ToolScanResult)
 async def start_tool_scan(request: ToolScanRequest) -> ToolScanResult:
     return run_tool_scan(request)
+
+
+@app.post("/tool-scans/submit", response_model=ToolScanQueuedResult)
+async def submit_tool_scan_job(request: ToolScanRequest) -> ToolScanQueuedResult:
+    try:
+        return submit_tool_scan(request)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+
+@app.get("/tool-scans/jobs/{job_id}", response_model=ToolScanJobStatus)
+async def tool_scan_job_status(job_id: str) -> ToolScanJobStatus:
+    try:
+        return get_tool_scan_job(job_id)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
 
 
 @app.get("/reports")
